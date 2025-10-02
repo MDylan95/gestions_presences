@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Gestion des présences</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <style>
+      :root {
+        --primary: #4361ee;
+        --primary-hover: #3a56d4;
+        --success: #198754;
+        --success-hover: #157347;
+        --warning: #ffc107;
+        --warning-hover: #e0a800;
+        --danger: #dc3545;
+        --danger-hover: #bb2d3b;
+        --light: #f8f9fa;
+        --dark: #212529;
+        --gray: #6c757d;
+        --light-gray: #e9ecef;
+        --card-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        --sidebar-width: 280px;
+      }
+
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        background-color: #f5f7fb;
+        color: var(--dark);
+        display: flex;
+        min-height: 100vh;
+      }
+
+      /* Sidebar améliorée */
+      .sidebar {
+        width: var(--sidebar-width);
+        background: linear-gradient(180deg, var(--primary) 0%, #3a56d4 100%);
+        color: white;
+        padding: 1.5rem;
+        display: flex;
+        flex-direction: column;
+        box-shadow: var(--card-shadow);
+        transition: all 0.3s ease;
+      }
+
+      .sidebar-header {
+        margin-bottom: 1.5rem;
+        padding-bottom: 1.5rem;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+      }
+
+      .sidebar-title {
+        color: white;
+        font-weight: 600;
+        font-size: 1.5rem;
+        margin: 0;
+        text-align: center;
+      }
+
+      .nav {
+        flex-direction: column;
+      }
+
+      .nav-item {
+        margin-bottom: 0.8rem;
+      }
+
+      .nav-link {
+        display: flex;
+        align-items: center;
+        padding: 0.8rem 1rem;
+        color: rgba(255, 255, 255, 0.9);
+        text-decoration: none;
+        border-radius: 8px;
+        transition: all 0.3s;
+        font-weight: 500;
+        border: none;
+        position: relative;
+      }
+
+      .nav-link.active {
+        background-color: rgba(255, 255, 255, 0.25) !important;
+        transform: translateX(5px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      }
+
+      .nav-link.active::before {
+        content: "";
+        position: absolute;
+        left: -1.5rem;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 6px;
+        height: 60%;
+        background-color: white;
+        border-radius: 0 4px 4px 0;
+      }
+
+      .nav-link.btn-info {
+        background-color: rgba(13, 202, 240, 0.2);
+        border: none;
+      }
+
+      .nav-link.btn-primary {
+        background-color: rgba(255, 255, 255, 0.15);
+        border: none;
+      }
+
+      .nav-link.btn-success {
+        background-color: rgba(25, 135, 84, 0.2);
+        border: none;
+      }
+
+      .nav-link.btn-warning {
+        background-color: rgba(255, 193, 7, 0.2);
+        border: none;
+        color: white;
+      }
+
+      .nav-link.btn-outline-danger {
+        background-color: rgba(220, 53, 69, 0.15);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        color: white;
+      }
+
+      .nav-link:hover:not(.active) {
+        background-color: rgba(255, 255, 255, 0.2);
+        transform: translateX(3px);
+      }
+
+      .nav-link i {
+        margin-right: 12px;
+        font-size: 1.2rem;
+        width: 24px;
+        text-align: center;
+      }
+
+      /* Main content amélioré */
+      .main-content {
+        flex: 1;
+        padding: 2rem;
+        overflow-y: auto;
+      }
+
+      /* Alertes modernisées */
+      .alert {
+        border: none;
+        border-radius: 12px;
+        box-shadow: var(--card-shadow);
+        padding: 1rem 1.5rem;
+      }
+
+      .alert-success {
+        background-color: #d4edda;
+        color: #155724;
+      }
+
+      .alert-danger {
+        background-color: #f8d7da;
+        color: #721c24;
+      }
+
+      /* Responsive */
+      @media (max-width: 768px) {
+        body {
+          flex-direction: column;
+        }
+
+        .sidebar {
+          width: 100%;
+          padding: 1rem;
+        }
+
+        .nav-link.active::before {
+          left: -1rem;
+        }
+
+        .main-content {
+          padding: 1.5rem;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Sidebar -->
+    <nav class="sidebar">
+      <div class="sidebar-header">
+        <h1 class="sidebar-title">Gestion des Présences</h1>
+      </div>
+      <ul class="nav flex-column">
+        {% if current_user.is_authenticated %}
+        <!-- Accueil -->
+        <li class="nav-item">
+          <a
+            class="nav-link btn btn-info w-100 text-start {{ 'active' if request.endpoint == 'index' else '' }}"
+            href="{{ url_for('index') }}"
+          >
+            <i class="fas fa-home"></i> Accueil
+          </a>
+        </li>
+        <!-- Onglet Employés -->
+        <li class="nav-item">
+          <a
+            class="nav-link btn btn-primary w-100 text-start {{ 'active' if request.endpoint in ['list_employes', 'add_employe'] else '' }}"
+            href="{{ url_for('list_employes') }}"
+          >
+            <i class="fas fa-users"></i> Employés
+          </a>
+        </li>
+        <!-- Onglet Présences du jour -->
+        <li class="nav-item">
+          <a
+            class="nav-link btn btn-success w-100 text-start {{ 'active' if request.endpoint in ['presences_jour', 'presences_enregistrer', 'entry', 'exit_'] else '' }}"
+            href="{{ url_for('presences_jour') }}"
+          >
+            <i class="fas fa-clipboard-check"></i> Présences du jour
+          </a>
+        </li>
+        <!-- Onglet Historique des présences -->
+        <li class="nav-item">
+          <a
+            class="nav-link btn btn-warning w-100 text-start {{ 'active' if request.endpoint == 'historique_presences' else '' }}"
+            href="{{ url_for('historique_presences') }}"
+          >
+            <i class="fas fa-history"></i> Historique
+          </a>
+        </li>
+         <!-- parametre -->
+        <li class="nav-item">
+ <a
+class="nav-link btn btn-primary w-100 text-start {{ 'active' if request.endpoint == 'settings' else '' }}"
+ href="{{ url_for('settings') }}"
+ >
+ <i class="fas fa-cog"></i> Paramètres
+ </a>
+ </li>
+
+        <!-- Logout -->
+        <li class="nav-item mt-4">
+          <a
+            class="nav-link btn btn-outline-danger w-100 text-start"
+            href="{{ url_for('logout') }}"
+          >
+            <i class="fas fa-sign-out-alt"></i> Déconnexion
+          </a>
+        </li>
+        {% endif %}
+      </ul>
+    </nav>
+
+    <!-- Main content -->
+    <div class="main-content">
+      {% with messages = get_flashed_messages(with_categories=true) %} {% if
+      messages %} {% for category, message in messages %}
+      <div
+        class="alert alert-{{ 'success' if category == 'success' else 'danger' }} alert-dismissible fade show"
+        role="alert"
+      >
+        <i
+          class="fas {{ 'fa-check-circle' if category == 'success' else 'fa-exclamation-circle' }} me-2"
+        ></i>
+        {{ message }}
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="alert"
+        ></button>
+      </div>
+      {% endfor %} {% endif %} {% endwith %} {% block content %}{% endblock %}
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+      // Script pour gérer la navigation active
+      document.addEventListener("DOMContentLoaded", function () {
+        // Ajouter la classe active en fonction de l'URL actuelle
+        const currentPath = window.location.pathname;
+        const navLinks = document.querySelectorAll(".nav-link");
+
+        navLinks.forEach((link) => {
+          // Vérifier si le lien correspond à la page actuelle
+          if (link.getAttribute("href") === currentPath) {
+            link.classList.add("active");
+          }
+
+          // Ajouter un événement de clic pour mettre à jour l'état actif
+          link.addEventListener("click", function () {
+            navLinks.forEach((l) => l.classList.remove("active"));
+            this.classList.add("active");
+          });
+        });
+      });
+    </script>
+  </body>
+</html>

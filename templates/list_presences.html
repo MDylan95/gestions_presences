@@ -1,0 +1,287 @@
+{% extends 'base.html' %} {% block content %}
+<div class="presences-container">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h1 class="page-title">Présences du Jour</h1>
+    
+  </div>
+
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h5 class="date-display">
+    </h5>
+    <a href="{{ url_for('presences_enregistrer') }}" class="btn btn-primary">
+      <i class="fas fa-user-check me-2"></i>Enregistrer une présence
+    </a>
+  </div>
+
+  {% if presences %}
+  <div class="card">
+    <div class="card-header">
+      <h5 class="mb-0">
+        <i class="fas fa-list-check me-2"></i>Liste des présences
+      </h5>
+    </div>
+    <div class="card-body p-0">
+      <div class="table-responsive">
+        <table class="table table-hover presences-table">
+          <thead>
+            <tr>
+              <th>Employé</th>
+              <th>Matricule</th>
+              <th>Entrée</th>
+              <th>Sortie</th>
+              
+              <th>Statut</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for p in presences %}
+            <tr>
+              <td>
+                <div class="employee-info">
+                  <div class="employee-name">
+                    {{ p.employe.nom if p.employe else 'Inconnu' }} {{
+                    p.employe.prenom if p.employe else '' }}
+                  </div>
+                </div>
+              </td>
+              <td>
+                <span class="badge bg-secondary">{{ p.matricule }}</span>
+              </td>
+              <td>
+                <div class="time-entry">
+                  <div class="time">{{ p.heure_entree.strftime('%H:%M') }}</div>
+                  <div class="date">
+                    {{ p.heure_entree.strftime('%d/%m/%Y') }}
+                  </div>
+                </div>
+              </td>
+              <td>
+                {% if p.heure_sortie %}
+                <div class="time-entry">
+                  <div class="time">{{ p.heure_sortie.strftime('%H:%M') }}</div>
+                  <div class="date">
+                    {{ p.heure_sortie.strftime('%d/%m/%Y') }}
+                  </div>
+                </div>
+                {% else %}
+                <span class="text-muted">--</span>
+                {% endif %}
+              </td>
+             
+              <td>
+                {% if p.heure_sortie %}
+                <span class="badge bg-success">Terminé</span>
+                {% else %}
+                <span class="badge bg-warning">En cours</span>
+                {% endif %}
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+ 
+  {% else %}
+  <div class="empty-state">
+    <div class="card">
+      <div class="card-body text-center py-5">
+        <i class="fas fa-clipboard-list fa-4x text-muted mb-3"></i>
+        <h4 class="text-muted">Aucune présence enregistrée</h4>
+        <p class="text-muted">
+          Aucune présence n'a été enregistrée pour aujourd'hui.
+        </p>
+        <a
+          href="{{ url_for('presences_enregistrer') }}"
+          class="btn btn-primary mt-3"
+        >
+          <i class="fas fa-user-check me-2"></i>Enregistrer une présence
+        </a>
+      </div>
+    </div>
+  </div>
+  {% endif %}
+</div>
+
+<style>
+  .presences-container {
+    padding: 0 0.5rem;
+  }
+
+  .page-title {
+    font-weight: 600;
+    color: #2c3e50;
+    margin: 0;
+  }
+
+  .btn-back {
+    background-color: #6c757d;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 0.5rem 1rem;
+    transition: all 0.3s;
+  }
+
+  .btn-back:hover {
+    background-color: #5a6268;
+    color: white;
+    transform: translateY(-2px);
+  }
+
+  .date-display {
+    color: #6c757d;
+    font-weight: 500;
+  }
+
+  .card {
+    border: none;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  }
+
+  .card-header {
+    background: linear-gradient(120deg, #4361ee, #3a56d4);
+    color: white;
+    padding: 1rem 1.5rem;
+    border-radius: 12px 12px 0 0 !important;
+  }
+
+  .presences-table {
+    margin-bottom: 0;
+  }
+
+  .presences-table th {
+    background-color: #f8f9fa;
+    color: #2c3e50;
+    font-weight: 600;
+    padding: 1rem;
+    border-top: none;
+    font-size: 0.9rem;
+  }
+
+  .presences-table td {
+    padding: 1rem;
+    vertical-align: middle;
+  }
+
+  .presences-table tr {
+    transition: background-color 0.2s;
+  }
+
+  .presences-table tr:hover {
+    background-color: #f8f9fa;
+  }
+
+  .employee-info {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .employee-name {
+    font-weight: 500;
+    color: #2c3e50;
+  }
+
+  .time-entry {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .time {
+    font-weight: 500;
+    color: #2c3e50;
+  }
+
+  .date {
+    font-size: 0.8rem;
+    color: #6c757d;
+  }
+
+  .hours-worked {
+    font-weight: 600;
+    color: #198754;
+  }
+
+  .badge {
+    font-size: 0.75rem;
+    padding: 0.5rem 0.75rem;
+    border-radius: 20px;
+  }
+
+  .summary-item {
+    padding: 1rem;
+  }
+
+  .summary-value {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #4361ee;
+    line-height: 1;
+    margin-bottom: 0.5rem;
+  }
+
+  .summary-label {
+    color: #6c757d;
+    font-size: 0.9rem;
+  }
+
+  .empty-state {
+    max-width: 500px;
+    margin: 2rem auto;
+  }
+
+  @media (max-width: 992px) {
+    .d-flex {
+      flex-direction: column;
+      gap: 1rem;
+      align-items: flex-start !important;
+    }
+
+    .btn-back {
+      align-self: flex-start;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .presences-table {
+      font-size: 0.85rem;
+    }
+
+    .presences-table th,
+    .presences-table td {
+      padding: 0.75rem 0.5rem;
+    }
+
+    .summary-value {
+      font-size: 1.5rem;
+    }
+
+    .card-header h5 {
+      font-size: 1rem;
+    }
+  }
+</style>
+
+<script>
+  // Ajouter la date du jour
+  document.addEventListener("DOMContentLoaded", function () {
+    const today = new Date();
+    const options = {
+      weekday: "long",
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    };
+    const dateString = today.toLocaleDateString("fr-FR", options);
+
+    // Mettre à jour l'élément date-display s'il existe
+    const dateDisplay = document.querySelector(".date-display");
+    if (dateDisplay) {
+      dateDisplay.textContent = dateDisplay.textContent + " " + dateString;
+    }
+  });
+</script>
+{% endblock %}

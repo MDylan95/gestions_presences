@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container">
+  <h1 class="page-title">Modifier l'employé</h1>
+  <form method="POST" action="{{ url_for('edit_employe', matricule=employe.matricule) }}">
+    <div class="mb-3">
+      <label class="form-label">Matricule</label>
+      <input name="matricule" class="form-control" value="{{ employe.matricule }}" required />
+    </div>
+    <div class="mb-3">
+      <label class="form-label">Nom</label>
+      <input name="nom" class="form-control" value="{{ employe.nom }}" required />
+    </div>
+    <div class="mb-3">
+      <label class="form-label">Prénom</label>
+      <input name="prenom" class="form-control" value="{{ employe.prenom }}" required />
+    </div>
+    <button class="btn btn-primary w-100">
+      <i class="fas fa-save"></i> Sauvegarder les modifications
+    </button>
+  </form>
+</div>
+{% endblock %}

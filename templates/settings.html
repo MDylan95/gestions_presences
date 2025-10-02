@@ -1,0 +1,42 @@
+{% extends 'base.html' %} {% block content %}
+<div class="container-fluid">
+  <div class="row justify-content-center">
+    <div class="col-md-8 col-lg-6">
+      <h1 class="page-title">Paramètres du compte</h1>
+      <p class="lead text-muted">Modifier votre adresse e-mail ou votre mot de passe.</p>
+
+      <div class="card shadow-sm mt-4">
+        <div class="card-body">
+          <form method="POST" action="{{ url_for('settings') }}">
+            <h5 class="card-title mb-3"><i class="fas fa-user-circle me-2"></i>Modifier l'e-mail</h5>
+            <div class="mb-3">
+              <label for="email" class="form-label">Nouvel e-mail</label>
+              <input type="email" class="form-control" id="email" name="email" value="{{ current_user.email }}" required>
+            </div>
+            <button type="submit" name="update_email" class="btn btn-primary w-100">Mettre à jour l'e-mail</button>
+          </form>
+
+          <hr class="my-4">
+
+          <form method="POST" action="{{ url_for('settings') }}">
+            <h5 class="card-title mb-3"><i class="fas fa-key me-2"></i>Modifier le mot de passe</h5>
+            <div class="mb-3">
+              <label for="current_password" class="form-label">Mot de passe actuel</label>
+              <input type="password" class="form-control" id="current_password" name="current_password" required>
+            </div>
+            <div class="mb-3">
+              <label for="new_password" class="form-label">Nouveau mot de passe</label>
+              <input type="password" class="form-control" id="new_password" name="new_password" required>
+            </div>
+            <div class="mb-3">
+              <label for="confirm_password" class="form-label">Confirmer le nouveau mot de passe</label>
+              <input type="password" class="form-control" id="confirm_password" name="confirm_password" required>
+            </div>
+            <button type="submit" name="update_password" class="btn btn-primary w-100">Mettre à jour le mot de passe</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
