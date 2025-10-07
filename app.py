@@ -6,7 +6,7 @@ from datetime import datetime, timedelta
 
 # ==================== INITIALISATION ====================
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:0000@localhost/gestion_entreprise'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:0000@localhost/gestion_presences'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.secret_key = 'dev'
 
